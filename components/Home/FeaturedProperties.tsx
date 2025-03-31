@@ -202,7 +202,8 @@ function PropertyCard({ property }: { property: IProperty }) {
               </Badge>
             )}
           </div>
-          <h3 className="font-semibold text-lg">{property.name}</h3>
+          <h3 className="font-semibold text-lg line-clamp-1">{property.name}</h3>
+          <p className="text-gray-700 text-base mb-2 line-clamp-2">{property.description}</p>
           <p className="text-gray-600 text-sm mb-2">{property.location}</p>
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-1">
