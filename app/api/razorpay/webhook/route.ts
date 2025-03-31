@@ -35,7 +35,7 @@ export async function POST(req: Request) {
       },
       body: JSON.stringify({
         access_key: process.env.WEB3FORMS_SECRET!, // Replace with your Web3Forms API key
-        from_name: "Your Booking Service",
+        from_name: "Booking Service",
         name: booking.name,
         email: booking.email,
         subject: "Booking Confirmed - Your Stay at Our Property",
