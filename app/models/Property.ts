@@ -14,6 +14,7 @@ export interface IProperty {
   discount: number;
   available: boolean;
   maxGuests: number;
+  maxRooms: number;
   amenities: string[];
   host: {
     name: string;
@@ -45,6 +46,7 @@ const PropertySchema = new Schema<IProperty>(
     images: { type: [String], required: true },
     available: { type: Boolean, required: true, default: true },
     maxGuests: { type: Number, required: true },
+    maxRooms: { type: Number, required: true },
     amenities: { type: [String], default: [] },
     host: {
       name: { type: String, required: true },
