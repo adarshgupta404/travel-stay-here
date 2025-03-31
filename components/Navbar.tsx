@@ -21,7 +21,7 @@ const Navbar = () => {
   };
 
   return (
-    <header className="bg-blue-700 z-10 text-white py-2 sticky top-0">
+    <header className="bg-blue-700 z-10 text-white py-2">
       <div className="container mx-auto relative  px-4">
         <div className="flex flex-wrap items-center justify-between gap-4">
           <Link href="/" className="text-2xl font-bold">
@@ -29,11 +29,11 @@ const Navbar = () => {
           </Link>
 
           <div className="flex items-center gap-6">
-            <Link href="#" className="text-sm hover:underline hidden md:block">
+            <Link href="/listings" className="text-sm hover:underline hidden md:block">
               List your property
             </Link>
-            <Link href="#" className="text-sm hover:underline hidden md:block">
-              Deals
+            <Link href="/mybookings" className="text-sm hover:underline hidden md:block">
+              My Bookings
             </Link>
 
             {user ? (

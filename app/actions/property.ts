@@ -42,7 +42,7 @@ export async function getAllProperties() {
 
     const properties = await Property.find()
       .select(
-        "_id name slug price location description images available createdAt rating discount reviews"
+        "_id name slug price type maxGuests maxRooms location description images available createdAt rating discount reviews"
       )
       .limit(4)
       .lean<IProperty[]>();

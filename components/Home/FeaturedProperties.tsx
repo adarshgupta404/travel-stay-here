@@ -190,6 +190,12 @@ function PropertyCard({ property }: { property: IProperty }) {
             <Badge className="bg-blue-100 text-blue-700 hover:bg-blue-100">
              {property.type}
             </Badge>
+            <Badge className="bg-blue-100 text-blue-700 hover:bg-blue-100">
+             {property.maxGuests} Guest / Room
+            </Badge>
+            <Badge className="bg-blue-100 text-blue-700 hover:bg-blue-100">
+             {property.maxRooms} Rooms
+            </Badge>
             {property.rating >= 9 && (
               <Badge className="bg-green-100 text-green-700 hover:bg-green-100">
                 Exceptional
