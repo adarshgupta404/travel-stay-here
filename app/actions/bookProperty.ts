@@ -54,8 +54,6 @@ export async function bookProperty(
       0
     );
 
-    console.log(bookedRooms + capacity.rooms,property.maxRooms )
-
     // Check if the requested rooms exceed the available rooms
     if (bookedRooms + capacity.rooms > property.maxRooms) {
       return {
