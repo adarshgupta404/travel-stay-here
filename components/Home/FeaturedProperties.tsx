@@ -191,7 +191,7 @@ function PropertyCard({ property }: { property: IProperty }) {
              {property.type}
             </Badge>
             <Badge className="bg-blue-100 text-blue-700 hover:bg-blue-100">
-             {property.maxGuests} Guest / Room
+             {property.maxGuests} Guests / Room
             </Badge>
             <Badge className="bg-blue-100 text-blue-700 hover:bg-blue-100">
              {property.maxRooms} Rooms
