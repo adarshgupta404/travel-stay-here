@@ -1,4 +1,5 @@
 "use client"
+
 import { bookProperty } from "@/app/actions/bookProperty"
 import type { IProperty } from "@/app/models/Property"
 import { useEffect, useState, useTransition } from "react"
@@ -10,29 +11,8 @@ import { Separator } from "@/components/ui/separator"
 import { Badge } from "@/components/ui/badge"
 import { Calendar } from "@/components/ui/calendar"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
-import { format } from "date-fns"
-import {
-  CalendarIcon,
-  MapPin,
-  Star,
-  Home,
-  Check,
-  AlertCircle,
-  Minus,
-  Plus,
-  UserRound,
-  BedDouble,
-  Baby,
-  Wifi,
-  PocketIcon as Pool,
-  Wind,
-  Car,
-  Clock,
-  Phone,
-  User,
-  MapIcon,
-  CalendarIcon as CalendarIconFull,
-} from "lucide-react"
+import { format, addDays } from "date-fns"
+import { CalendarIcon, MapPin, Star, Home, Check, AlertCircle, Minus, Plus, UserRound, BedDouble, Baby, Wifi, PocketIcon as Pool, Wind, Car, Clock, Phone, User, MapIcon, CalendarIcon as CalendarIconFull } from 'lucide-react'
 import Image from "next/image"
 import { cn } from "@/lib/utils"
 import { toast } from "sonner"
@@ -41,11 +21,15 @@ import { useAuthContext } from "@/app/components/AuthProvider"
 import { Textarea } from "../ui/textarea"
 import { checkAvailability } from "@/app/actions/availability"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { DateRange } from "react-day-picker"
+import { DateRangePicker } from "../date-range-picker"
 
 const PropertyPageDetails = ({ property }: { property: IProperty }) => {
   const { user, signOut } = useAuthContext()
-  const [checkIn, setCheckIn] = useState<Date | undefined>(undefined)
-  const [checkOut, setCheckOut] = useState<Date | undefined>(undefined)
+  const [dateRange, setDateRange] = useState<DateRange | undefined>({
+    from: undefined,
+    to: undefined,
+  })
   const [email, setEmail] = useState("")
   const [name, setName] = useState("")
   const [loading, startTransition] = useTransition()
@@ -80,11 +64,11 @@ const PropertyPageDetails = ({ property }: { property: IProperty }) => {
 
   useEffect(() => {
     const checkPropertyAvailability = async () => {
-      if (checkIn && checkOut) {
+      if (dateRange?.from && dateRange?.to) {
         const result = await checkAvailability(
           property._id,
-          checkIn.toLocaleDateString(),
-          checkOut.toLocaleDateString(),
+          dateRange.from.toLocaleDateString(),
+          dateRange.to.toLocaleDateString(),
         )
         setAvailable(result)
 
@@ -99,14 +83,16 @@ const PropertyPageDetails = ({ property }: { property: IProperty }) => {
         }
       }
     }
-    if (checkIn && checkOut) {
+    if (dateRange?.from && dateRange?.to) {
       checkPropertyAvailability()
     }
-  }, [checkIn, checkOut, property._id])
+  }, [dateRange, property._id])
 
   // Calculate total nights and price
   const totalNights =
-    checkIn && checkOut ? Math.ceil((checkOut.getTime() - checkIn.getTime()) / (1000 * 60 * 60 * 24)) : 0
+    dateRange?.from && dateRange?.to
+      ? Math.ceil((dateRange.to.getTime() - dateRange.from.getTime()) / (1000 * 60 * 60 * 24))
+      : 0
 
   const totalPrice = totalNights * property.price * rooms
   const discountedPrice = property.discount ? totalPrice - totalPrice * (property.discount / 100) : totalPrice
@@ -131,7 +117,7 @@ const PropertyPageDetails = ({ property }: { property: IProperty }) => {
   }, [user])
 
   const validateForm = () => {
-    if (!checkIn || !checkOut) {
+    if (!dateRange?.from || !dateRange?.to) {
       setFormError("Please select check-in and check-out dates")
       return false
     }
@@ -147,7 +133,7 @@ const PropertyPageDetails = ({ property }: { property: IProperty }) => {
       setFormError("Please enter a valid phone number")
       return false
     }
-    if (checkIn >= checkOut) {
+    if (dateRange.from >= dateRange.to) {
       setFormError("Check-out date must be after check-in date")
       return false
     }
@@ -174,7 +160,7 @@ const PropertyPageDetails = ({ property }: { property: IProperty }) => {
       return
     }
     startTransition(async () => {
-      if (!property._id) return
+      if (!property._id || !dateRange?.from || !dateRange?.to) return
 
       try {
         const capacity = {
@@ -184,8 +170,8 @@ const PropertyPageDetails = ({ property }: { property: IProperty }) => {
         }
         const response = await bookProperty(
           property._id,
-          checkIn ? format(checkIn, "yyyy-MM-dd") : "",
-          checkOut ? format(checkOut, "yyyy-MM-dd") : "",
+          format(dateRange.from, "yyyy-MM-dd"),
+          format(dateRange.to, "yyyy-MM-dd"),
           email,
           name,
           phone,
@@ -514,64 +500,45 @@ const PropertyPageDetails = ({ property }: { property: IProperty }) => {
                 </div>
               </CardHeader>
               <CardContent className="space-y-6 pt-6">
-                {/* Date Selection */}
+                {/* Date Range Selection */}
                 <div className="space-y-4">
                   <h3 className="font-medium text-sm text-muted-foreground">DATES</h3>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="check-in">Check-in</Label>
-                      <Popover>
-                        <PopoverTrigger asChild>
-                          <Button
-                            variant="outline"
-                            className={cn(
-                              "w-full justify-start text-left font-normal",
-                              !checkIn && "text-muted-foreground",
-                              checkIn && "border-primary",
-                            )}
-                          >
-                            <CalendarIcon className="mr-2 h-4 w-4" />
-                            {checkIn ? format(checkIn, "PPP") : "Select date"}
-                          </Button>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-auto p-0">
-                          <Calendar
-                            mode="single"
-                            selected={checkIn}
-                            onSelect={setCheckIn}
-                            initialFocus
-                            disabled={(date) => date < new Date()}
-                          />
-                        </PopoverContent>
-                      </Popover>
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="check-out">Check-out</Label>
-                      <Popover>
-                        <PopoverTrigger asChild>
-                          <Button
-                            variant="outline"
-                            className={cn(
-                              "w-full justify-start text-left font-normal",
-                              !checkOut && "text-muted-foreground",
-                              checkOut && "border-primary",
-                            )}
-                          >
-                            <CalendarIcon className="mr-2 h-4 w-4" />
-                            {checkOut ? format(checkOut, "PPP") : "Select date"}
-                          </Button>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-auto p-0">
-                          <Calendar
-                            mode="single"
-                            selected={checkOut}
-                            onSelect={setCheckOut}
-                            initialFocus
-                            disabled={(date) => date < new Date() || (checkIn ? date <= checkIn : false)}
-                          />
-                        </PopoverContent>
-                      </Popover>
-                    </div>
+                  <div className="grid gap-2">
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <Button
+                          variant="outline"
+                          className={cn(
+                            "w-full justify-start text-left font-normal",
+                            !dateRange?.from && "text-muted-foreground"
+                          )}
+                        >
+                          <CalendarIcon className="mr-2 h-4 w-4" />
+                          {dateRange?.from ? (
+                            dateRange.to ? (
+                              <>
+                                {format(dateRange.from, "MMM d, yyyy")} - {format(dateRange.to, "MMM d, yyyy")}
+                              </>
+                            ) : (
+                              format(dateRange.from, "MMM d, yyyy")
+                            )
+                          ) : (
+                            "Select date range"
+                          )}
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-auto p-0" align="start">
+                        <Calendar
+                          initialFocus
+                          mode="range"
+                          defaultMonth={dateRange?.from}
+                          selected={dateRange}
+                          onSelect={setDateRange}
+                          numberOfMonths={2}
+                          disabled={(date) => date < new Date()}
+                        />
+                      </PopoverContent>
+                    </Popover>
                   </div>
                 </div>
 
@@ -810,4 +777,3 @@ const PropertyPageDetails = ({ property }: { property: IProperty }) => {
 }
 
 export default PropertyPageDetails
-

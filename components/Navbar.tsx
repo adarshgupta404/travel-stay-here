@@ -21,8 +21,8 @@ const Navbar = () => {
   };
 
   return (
-    <header className="bg-blue-700 z-10 text-white py-2">
-      <div className="container mx-auto relative  px-4">
+    <header className="bg-blue-700 z-10 text-white relative py-2">
+      <div className="container mx-auto px-4">
         <div className="flex flex-wrap items-center justify-between gap-4">
           <Link href="/" className="text-2xl font-bold">
             Travel.com
