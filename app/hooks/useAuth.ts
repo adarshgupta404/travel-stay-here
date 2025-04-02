@@ -11,12 +11,14 @@ import {
 } from "firebase/auth";
 import { auth } from "../lib/firebase";
 import { getUser, registerUser } from "../actions/user";
+import { useRouter } from "next/navigation";
 
 interface AuthUser extends User {
   _id?: string; // Add MongoDB ID
 }
 
 export function useAuth() {
+  const router = useRouter();
   const [user, setUser] = useState<AuthUser | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -89,6 +91,7 @@ export function useAuth() {
     try {
       await firebaseSignOut(auth);
       setUser(null);
+      router.push("/")
     } catch (error) {
       throw error;
     }

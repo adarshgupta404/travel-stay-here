@@ -13,6 +13,7 @@ const razorpay = new Razorpay({
 
 export async function bookProperty(
   propertyId: string,
+  userId: string,
   checkIn: string,
   checkOut: string,
   email: string,
@@ -29,6 +30,7 @@ export async function bookProperty(
   try {
     await connectDB();
     const property_id = new ObjectId(propertyId);
+    const user_id = new ObjectId(userId);
 
     // Fetch the property details
     const property:IProperty | null = await Property.findById(property_id);
@@ -76,6 +78,7 @@ export async function bookProperty(
     // Create a new booking (pending payment)
     const newBooking = await Booking.create({
       propertyId: property_id,
+      userId: user_id,
       checkIn,
       checkOut,
       email,

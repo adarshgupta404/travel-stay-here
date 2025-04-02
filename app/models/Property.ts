@@ -6,6 +6,7 @@ export interface IProperty {
   slug: string;
   price: number;
   location: string;
+  userId: mongoose.Schema.Types.ObjectId | string;
   description: string;
   images: string[];
   type: string;
@@ -35,6 +36,7 @@ export interface IProperty {
 const PropertySchema = new Schema<IProperty>(
   {
     name: { type: String, required: true },
+    userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
     slug: { type: String, required: true, unique: true },
     price: { type: Number, required: true },
     rating: { type: Number, required: true },

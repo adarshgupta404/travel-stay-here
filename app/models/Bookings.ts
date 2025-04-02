@@ -1,7 +1,9 @@
 import mongoose, { Schema, Document } from "mongoose";
 
 export interface IBooking {
-  propertyId: mongoose.Schema.Types.ObjectId;
+  _id: any;
+  propertyId: mongoose.Schema.Types.ObjectId | string;
+  userId: mongoose.Schema.Types.ObjectId | string;
   checkIn: Date;
   checkOut: Date;
   email: string;
@@ -24,6 +26,7 @@ export interface IBooking {
 const BookingSchema = new Schema<IBooking>(
   {
     propertyId: { type: mongoose.Schema.Types.ObjectId, ref: "Property", required: true },
+    userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
     checkIn: { type: Date, required: true },
     checkOut: { type: Date, required: true },
     email: { type: String, required: true },
