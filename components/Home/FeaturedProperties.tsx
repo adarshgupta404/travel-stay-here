@@ -189,7 +189,7 @@ function PropertyCard({ property }: { property: IProperty }) {
           <div className="flex flex-wrap items-center gap-1 mb-1">
             <Badge className="bg-blue-100 whitespace-nowrap text-blue-700 hover:bg-blue-100">{property.type}</Badge>
             <Badge className="bg-blue-100 whitespace-nowrap text-blue-700 hover:bg-blue-100">
-              {property.maxGuests} Guests / Room
+              {property.maxGuests} Guests
             </Badge>
             <Badge className="bg-blue-100 whitespace-nowrap text-blue-700 hover:bg-blue-100">
               {property.maxRooms} Rooms
